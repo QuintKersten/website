@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Site</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-content {
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .paw-prints {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            letter-spacing: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.4486ARCzZZAXuOJ8mLaFIwHaE8%3Fpid%3DApi&f=1&ipt=04f5a298183b6c809c19a855d7d9b87d63cb584b07decf116e7b1f99e2ec93c2&ipo=images" alt="Adorable cat">
+        <div class="card-content">
+            <h1>Hello, I'm New Here! <span class="emoji">👋</span></h1>
+            <p>Welcome to my little corner of the internet. I'm learning how to make websites, and this is my first project!</p>
+            <div class="paw-prints">🐾 🐾 🐾</div>
+        </div>
+    </div>
+</body>
+</html>
