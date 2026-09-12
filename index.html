@@ -1,84 +1,843 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to My Site</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boulder Competitie — Inschrijven</title>
+<style>
+  :root {
+    --bg: #0e1014;
+    --surface: #161a21;
+    --surface-2: #1d222c;
+    --surface-3: #242b38;
+    --border: #2b3342;
+    --text: #ece9e4;
+    --muted: #9aa3b2;
+    --accent: #ff8c42;      /* oranje klimgreep */
+    --accent-2: #4ecdc4;    /* turquoise klimgreep */
+    --accent-3: #b06ef0;    /* paarse klimgreep */
+    --danger: #e5484d;
+    --success: #46c46f;
+    --radius: 14px;
+    --shadow: 0 8px 30px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(1200px 500px at 85% -10%, rgba(255,140,66,.08), transparent 60%),
+      radial-gradient(900px 400px at -10% 30%, rgba(78,205,196,.07), transparent 60%),
+      radial-gradient(800px 500px at 60% 110%, rgba(176,110,240,.06), transparent 60%);
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+  /* ---------- Header ---------- */
+  header {
+    background: linear-gradient(135deg, #1b1f29 0%, #14171f 55%, #10131a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 22px 0;
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(8px);
+  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-3));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; box-shadow: var(--shadow);
+  }
+  .brand h1 { font-size: 20px; font-weight: 800; letter-spacing: .3px; }
+  .brand p { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
 
-        .card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            overflow: hidden;
-            text-align: center;
-        }
+  .tabs { display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; }
+  .tab {
+    border: none; background: transparent; color: var(--muted);
+    padding: 9px 18px; border-radius: 9px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .18s ease; font-family: inherit;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--accent); color: #14100c; }
 
-        .card img {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            display: block;
-        }
+  /* ---------- Hero ---------- */
+  .hero { padding: 46px 0 30px; text-align: center; }
+  .hero h2 { font-size: clamp(26px, 4.5vw, 40px); font-weight: 800; line-height: 1.2; }
+  .hero h2 span { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { color: var(--muted); max-width: 620px; margin: 14px auto 0; font-size: 16px; }
+  .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+  .badge {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 14px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px;
+  }
+  .badge b { color: var(--text); }
 
-        .card-content {
-            padding: 30px;
-        }
+  /* ---------- Section titles ---------- */
+  .section-title { display: flex; align-items: center; gap: 10px; margin: 34px 0 16px; }
+  .section-title h3 { font-size: 20px; font-weight: 800; }
+  .section-title .line { flex: 1; height: 1px; background: var(--border); }
 
-        h1 {
-            color: #333;
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
+  /* ---------- Cards / competition list ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+  .comp-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; display: flex; flex-direction: column; gap: 12px;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    position: relative; overflow: hidden;
+  }
+  .comp-card:hover { transform: translateY(-3px); border-color: #3a4456; box-shadow: var(--shadow); }
+  .comp-card::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  }
+  .comp-card.full { opacity: .82; }
+  .comp-card.full::before { background: var(--danger); }
+  .comp-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .comp-top h4 { font-size: 18px; font-weight: 800; line-height: 1.3; }
+  .comp-cat {
+    font-size: 11.5px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .cat-beginner { background: rgba(78,205,196,.15); color: var(--accent-2); border: 1px solid rgba(78,205,196,.35); }
+  .cat-intermediate { background: rgba(255,140,66,.15); color: var(--accent); border: 1px solid rgba(255,140,66,.35); }
+  .cat-expert { background: rgba(176,110,240,.15); color: var(--accent-3); border: 1px solid rgba(176,110,240,.35); }
+  .cat-open { background: rgba(154,163,178,.15); color: var(--muted); border: 1px solid rgba(154,163,178,.35); }
 
-        p {
-            color: #666;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
+  .comp-meta { display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; color: var(--muted); }
+  .comp-meta div { display: flex; align-items: center; gap: 8px; }
+  .comp-meta .icon { width: 18px; text-align: center; }
+  .comp-desc { font-size: 14px; color: var(--muted); border-left: 3px solid var(--border); padding-left: 12px; }
 
-        .emoji {
-            font-size: 1.5rem;
-            display: inline-block;
-            animation: bounce 2s infinite;
-        }
+  .spots { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .spots-bar { flex: 1; height: 8px; background: var(--surface-3); border-radius: 99px; overflow: hidden; }
+  .spots-bar > div { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .4s ease; }
+  .spots-bar > div.warn { background: var(--danger); }
+  .spots b { color: var(--text); }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+  .comp-actions { display: flex; gap: 10px; margin-top: auto; }
+  .btn {
+    border: none; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .18s ease; font-family: inherit; text-decoration: none; display: inline-flex;
+    align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: #14100c; }
+  .btn-primary:hover:not(:disabled) { background: #ffa05e; transform: translateY(-1px); }
+  .btn-ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--surface-3); }
+  .btn-danger { background: rgba(229,72,77,.12); color: var(--danger); border: 1px solid rgba(229,72,77,.35); }
+  .btn-danger:hover { background: rgba(229,72,77,.22); }
+  .btn-success { background: var(--success); color: #0c1a10; }
+  .btn-success:hover { background: #5ad485; }
+  .btn-sm { padding: 7px 12px; font-size: 13px; border-radius: 8px; }
+  .btn-block { width: 100%; }
 
-        .paw-prints {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            letter-spacing: 8px;
-        }
-    </style>
+  /* ---------- Forms ---------- */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow);
+  }
+  .panel h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .panel .sub { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  .field label .req { color: var(--accent); }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+    border-radius: 10px; padding: 11px 13px; font-size: 14.5px; font-family: inherit;
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,140,66,.15);
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field input[type="date"], .field input[type="time"] { color-scheme: dark; }
+  .field .hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(5,7,10,.72); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 26px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5); animation: pop .22s ease;
+  }
+  @keyframes pop { from { transform: scale(.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal h3 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+  .modal .sub { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px; background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--muted); width: 32px; height: 32px; border-radius: 9px; cursor: pointer; font-size: 15px;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-wrap { position: relative; }
+
+  /* ---------- Toast ---------- */
+  .toast-wrap { position: fixed; bottom: 22px; right: 22px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
+  .toast {
+    background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+    color: var(--text); padding: 13px 18px; border-radius: 11px; font-size: 14px; font-weight: 600;
+    box-shadow: var(--shadow); animation: slideIn .25s ease; max-width: 340px;
+  }
+  .toast.success { border-left-color: var(--success); }
+  .toast.error { border-left-color: var(--danger); }
+  @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ---------- Owner: participant list ---------- */
+  .owner-list { display: flex; flex-direction: column; gap: 14px; }
+  .owner-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px;
+  }
+  .owner-item-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .owner-item-head h4 { font-size: 16.5px; font-weight: 800; }
+  .owner-item-head .meta { font-size: 13px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; }
+  .owner-item-head .meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .participants { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; display: none; }
+  .participants.open { display: block; }
+  .participants table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .participants th {
+    text-align: left; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px;
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+  }
+  .participants td { padding: 9px 10px; border-bottom: 1px solid rgba(43,51,66,.5); }
+  .participants tr:last-child td { border-bottom: none; }
+  .participants .empty { color: var(--muted); font-size: 13.5px; padding: 14px 10px; text-align: center; }
+  .chip {
+    display: inline-block; font-size: 11.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+    background: var(--surface-3); color: var(--muted); border: 1px solid var(--border);
+  }
+  .chip.b { background: rgba(78,205,196,.12); color: var(--accent-2); border-color: rgba(78,205,196,.3); }
+  .chip.i { background: rgba(255,140,66,.12); color: var(--accent); border-color: rgba(255,140,66,.3); }
+  .chip.e { background: rgba(176,110,240,.12); color: var(--accent-3); border-color: rgba(176,110,240,.3); }
+
+  .export-btn { margin-left: auto; }
+
+  /* ---------- Empty state ---------- */
+  .empty-state {
+    text-align: center; padding: 50px 20px; color: var(--muted);
+    border: 2px dashed var(--border); border-radius: var(--radius);
+  }
+  .empty-state .big { font-size: 44px; margin-bottom: 12px; }
+  .empty-state h4 { color: var(--text); font-size: 17px; margin-bottom: 6px; }
+
+  /* ---------- Footer ---------- */
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 40px 0 30px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .header-inner { flex-direction: column; align-items: stretch; }
+    .tabs { justify-content: center; }
+    .toast-wrap { left: 16px; right: 16px; }
+  }
+</style>
 </head>
 <body>
-    <div class="card">
-        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.4486ARCzZZAXuOJ8mLaFIwHaE8%3Fpid%3DApi&f=1&ipt=04f5a298183b6c809c19a855d7d9b87d63cb584b07decf116e7b1f99e2ec93c2&ipo=images" alt="Adorable cat">
-        <div class="card-content">
-            <h1>Hello, I'm New Here! <span class="emoji">👋</span></h1>
-            <p>Welcome to my little corner of the internet. I'm learning how to make websites, and this is my first project!</p>
-            <div class="paw-prints">🐾 🐾 🐾</div>
-        </div>
+
+<header>
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="brand-logo">🧗</div>
+      <div>
+        <h1>Boulder Competitie</h1>
+        <p>Inschrijven &amp; beheer in één plek</p>
+      </div>
     </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <nav class="tabs">
+        <button class="tab active" data-tab="browse">Competities</button>
+        <button class="tab" data-tab="owner">Eigenaar</button>
+      </nav>
+      <button class="btn btn-ghost btn-sm" id="logout-btn" style="display:none;" title="Uitloggen">🚪 Uitloggen</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ============ TAB: BROWSE ============ -->
+  <section id="tab-browse">
+    <div class="hero">
+      <h2>Schrijf je in voor de <span>volgende bouldercompetitie</span></h2>
+      <p>Vind een competitie bij jou in de buurt, kies je categorie en verzeker je plek. Vol = vol, dus wees er snel bij!</p>
+      <div class="hero-badges">
+        <span class="badge">🟠 <b id="stat-comps">0</b> competities</span>
+        <span class="badge">🟢 <b id="stat-spots">0</b> vrije plekken</span>
+        <span class="badge">🧗 <b id="stat-regs">0</b> inschrijvingen</span>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <h3>Openstaande competities</h3>
+      <div class="line"></div>
+    </div>
+    <div id="comp-grid" class="grid"></div>
+  </section>
+
+  <!-- ============ TAB: OWNER ============ -->
+  <section id="tab-owner" style="display:none;">
+
+    <!-- Login scherm (zichtbaar als niet ingelogd) -->
+    <div id="owner-login">
+      <div class="hero" style="padding-bottom: 10px;">
+        <h2>Eigenaar <span>inloggen</span></h2>
+        <p>Dit gedeelte is alleen toegankelijk voor de eigenaar. Log in met je nickname en wachtwoord.</p>
+      </div>
+      <div class="panel" style="max-width: 420px; margin: 0 auto;">
+        <h3>🔐 Inloggen</h3>
+        <p class="sub">Alleen de eigenaar heeft toegang tot het beheerdersdashboard.</p>
+        <form id="login-form" class="form-grid">
+          <div class="field full">
+            <label>Nickname <span class="req">*</span></label>
+            <input type="text" id="l-nick" required maxlength="40" autocomplete="username">
+          </div>
+          <div class="field full">
+            <label>Wachtwoord <span class="req">*</span></label>
+            <input type="password" id="l-pass" maxlength="60" autocomplete="current-password">
+          </div>
+          <div class="full">
+            <button type="submit" class="btn btn-primary btn-block">Inloggen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Dashboard (alleen zichtbaar na inloggen) -->
+    <div id="owner-dashboard" style="display:none;">
+    <div class="hero" style="padding-bottom: 10px;">
+      <h2>Eigenaar <span>dashboard</span></h2>
+      <p>Maak nieuwe competities aan, beheer inschrijvingen en exporteer deelnemerslijsten.</p>
+    </div>
+
+    <div class="section-title">
+      <h3>➕ Nieuwe competitie aanmaken</h3>
+      <div class="line"></div>
+    </div>
+    <div class="panel">
+      <h3>Competitie details</h3>
+      <p class="sub">Vul de gegevens in en de competitie verschijnt direct op de inschrijfpagina.</p>
+      <form id="create-form" class="form-grid">
+        <div class="field full">
+          <label>Naam competitie <span class="req">*</span></label>
+          <input type="text" id="f-name" placeholder="Bijv. Winter Boulder Cup 2026" required maxlength="80">
+        </div>
+        <div class="field">
+          <label>Datum <span class="req">*</span></label>
+          <input type="date" id="f-date" required>
+        </div>
+        <div class="field">
+          <label>Tijd <span class="req">*</span></label>
+          <input type="time" id="f-time" value="19:00" required>
+        </div>
+        <div class="field full">
+          <label>Locatie <span class="req">*</span></label>
+          <input type="text" id="f-location" placeholder="Bijv. Klimhal De Rots, Amsterdam" required maxlength="100">
+        </div>
+        <div class="field">
+          <label>Categorie <span class="req">*</span></label>
+          <select id="f-category">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Gevorderd</option>
+            <option value="expert">Expert</option>
+            <option value="open">Open (alle niveaus)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Max. deelnemers <span class="req">*</span></label>
+          <input type="number" id="f-max" min="1" max="500" value="40" required>
+        </div>
+        <div class="field">
+          <label>Inschrijfdeadline</label>
+          <input type="date" id="f-deadline">
+          <div class="hint">Laat leeg voor geen deadline.</div>
+        </div>
+        <div class="field">
+          <label>Inschrijfgeld (€)</label>
+          <input type="number" id="f-price" min="0" step="0.5" value="10" placeholder="0 = gratis">
+        </div>
+        <div class="field full">
+          <label>Beschrijving</label>
+          <textarea id="f-desc" placeholder="Bijv. 20 boulders, 3 uur klimmen, prijzen voor top 3 per categorie..." maxlength="500"></textarea>
+        </div>
+        <div class="full">
+          <button type="submit" class="btn btn-primary btn-block">Competitie aanmaken</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="section-title">
+      <h3>📋 Mijn competities</h3>
+      <div class="line"></div>
+    </div>
+    <div id="owner-list" class="owner-list"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    Boulder Competitie.
+  </div>
+</footer>
+
+<!-- ============ MODAL: inschrijven ============ -->
+<div class="modal-overlay" id="register-modal">
+  <div class="modal-wrap">
+    <button class="modal-close" id="modal-close" title="Sluiten">✕</button>
+    <div class="modal">
+      <h3 id="reg-title">Inschrijven</h3>
+      <p class="sub" id="reg-sub"></p>
+      <form id="register-form" class="form-grid">
+        <div class="field full">
+          <label>Voor- en achternaam <span class="req">*</span></label>
+          <input type="text" id="r-name" placeholder="Bijv. Sanne de Vries" required maxlength="80">
+        </div>
+        <div class="field full">
+          <label>E-mailadres <span class="req">*</span></label>
+          <input type="email" id="r-email" placeholder="bijv. sanne@voorbeeld.nl" required maxlength="120">
+        </div>
+        <div class="field">
+          <label>Categorie <span class="req">*</span></label>
+          <select id="r-category">
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Gevorderd</option>
+            <option value="expert">Expert</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Klimhal / club (optioneel)</label>
+          <input type="text" id="r-club" placeholder="Bijv. Klimhal De Rots" maxlength="80">
+        </div>
+        <div class="field full">
+          <label>Opmerkingen (optioneel)</label>
+          <textarea id="r-notes" placeholder="Bijv. allergie, rolstoeltoegang nodig..." maxlength="300"></textarea>
+        </div>
+        <div class="full">
+          <button type="submit" class="btn btn-success btn-block" id="reg-submit">Bevestig inschrijving</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+"use strict";
+
+/* ================= Data (localStorage) ================= */
+const STORE_KEY = "boulderCompetities.v1";
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return { competitions: [], registrations: [] };
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data.competitions)) data.competitions = [];
+    if (!Array.isArray(data.registrations)) data.registrations = [];
+    return data;
+  } catch (e) {
+    return { competitions: [], registrations: [] };
+  }
+}
+function saveData(data) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+let DB = loadData();
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+/* ================= Helpers ================= */
+const $ = (sel) => document.querySelector(sel);
+const CAT_LABELS = { beginner: "Beginner", intermediate: "Gevorderd", expert: "Expert", open: "Open" };
+
+function fmtDate(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("nl-NL", { weekday: "short", day: "numeric", month: "long", year: "numeric" });
+}
+function fmtTime(t) { return t || "—"; }
+function fmtPrice(p) {
+  const n = Number(p);
+  if (!n) return "Gratis";
+  return "€" + n.toFixed(2).replace(".", ",");
+}
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function regsFor(compId) { return DB.registrations.filter((r) => r.compId === compId); }
+function isFull(comp) { return regsFor(comp.id).length >= comp.max; }
+function isPast(comp) {
+  const d = new Date(comp.date + "T" + (comp.time || "00:00"));
+  return d < new Date();
+}
+function deadlinePassed(comp) {
+  return comp.deadline && new Date(comp.deadline + "T23:59:59") < new Date();
+}
+function canRegister(comp) {
+  return !isFull(comp) && !isPast(comp) && !deadlinePassed(comp);
+}
+
+/* ================= Toasts ================= */
+function toast(msg, type = "") {
+  const el = document.createElement("div");
+  el.className = "toast " + type;
+  el.textContent = msg;
+  $("#toast-wrap").appendChild(el);
+  setTimeout(() => { el.style.opacity = "0"; el.style.transition = "opacity .3s"; }, 3200);
+  setTimeout(() => el.remove(), 3600);
+}
+
+/* ================= Auth (eigenaar) ================= */
+const ADMIN_NICK = "admin";
+const ADMIN_PASS = "admin";
+const AUTH_KEY = "boulderOwnerAuth";
+
+function isLoggedIn() {
+  return sessionStorage.getItem(AUTH_KEY) === "1";
+}
+function updateAuthUI() {
+  const loggedIn = isLoggedIn();
+  $("#owner-login").style.display = loggedIn ? "none" : "";
+  $("#owner-dashboard").style.display = loggedIn ? "" : "none";
+  $("#logout-btn").style.display = loggedIn ? "" : "none";
+  if (loggedIn) renderOwner();
+}
+
+/* ================= Tabs ================= */
+document.querySelectorAll(".tab").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    $("#tab-browse").style.display = btn.dataset.tab === "browse" ? "" : "none";
+    $("#tab-owner").style.display = btn.dataset.tab === "owner" ? "" : "none";
+    if (btn.dataset.tab === "owner") updateAuthUI();
+  });
+});
+
+/* ================= Login / logout ================= */
+$("#login-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const nick = $("#l-nick").value.trim();
+  const pass = $("#l-pass").value;
+  if (nick === ADMIN_NICK && pass === ADMIN_PASS) {
+    sessionStorage.setItem(AUTH_KEY, "1");
+    e.target.reset();
+    updateAuthUI();
+    toast("Welkom terug, admin! 👋", "success");
+  } else {
+    toast("Onjuiste nickname of wachtwoord.", "error");
+    $("#l-pass").value = "";
+    $("#l-pass").focus();
+  }
+});
+
+$("#logout-btn").addEventListener("click", () => {
+  sessionStorage.removeItem(AUTH_KEY);
+  updateAuthUI();
+  toast("Je bent uitgelogd.", "success");
+});
+
+/* ================= Render: browse ================= */
+function renderBrowse() {
+  const grid = $("#comp-grid");
+  const comps = [...DB.competitions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+  $("#stat-comps").textContent = comps.length;
+  $("#stat-spots").textContent = comps.reduce((s, c) => s + Math.max(0, c.max - regsFor(c.id).length), 0);
+  $("#stat-regs").textContent = DB.registrations.length;
+
+  if (!comps.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="big">🧗</div>
+        <h4>Nog geen competities</h4>
+        <p>er zijn geen competities.<p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = comps.map((c) => {
+    const regs = regsFor(c.id);
+    const full = isFull(c);
+    const past = isPast(c);
+    const open = canRegister(c);
+    const pct = Math.min(100, Math.round((regs.length / c.max) * 100));
+    const catClass = "cat-" + c.category;
+
+    return `
+    <article class="comp-card ${full ? "full" : ""}">
+      <div class="comp-top">
+        <h4>${esc(c.name)}</h4>
+        <span class="comp-cat ${catClass}">${CAT_LABELS[c.category] || c.category}</span>
+      </div>
+      <div class="comp-meta">
+        <div><span class="icon">📅</span> ${fmtDate(c.date)} om ${fmtTime(c.time)}</div>
+        <div><span class="icon">📍</span> ${esc(c.location)}</div>
+        <div><span class="icon">💶</span> ${fmtPrice(c.price)} inschrijfgeld</div>
+        ${c.deadline ? `<div><span class="icon">⏰</span> Deadline: ${fmtDate(c.deadline)}</div>` : ""}
+      </div>
+      ${c.desc ? `<p class="comp-desc">${esc(c.desc)}</p>` : ""}
+      <div class="spots">
+        <span>${regs.length}/${c.max}</span>
+        <div class="spots-bar"><div class="${pct >= 90 ? "warn" : ""}" style="width:${pct}%"></div></div>
+        <span>${full ? "VOL" : c.max - regs.length + " vrij"}</span>
+      </div>
+      <div class="comp-actions">
+        <button class="btn btn-primary btn-block" data-reg="${c.id}" ${open ? "" : "disabled"}>
+          ${past ? "Voorbij" : full ? "Volgeboekt" : deadlinePassed(c) ? "Deadline verstreken" : "Inschrijven"}
+        </button>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+/* ================= Render: owner ================= */
+function renderOwner() {
+  const list = $("#owner-list");
+  const comps = [...DB.competitions].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+  if (!comps.length) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="big">🏗️</div>
+        <h4>Nog geen competities</h4>
+        <p>Maak hierboven je eerste competitie aan.</p>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = comps.map((c) => {
+    const regs = regsFor(c.id);
+    const catClass = "cat-" + c.category;
+    return `
+    <div class="owner-item" data-owner-item="${c.id}">
+      <div class="owner-item-head">
+        <div>
+          <h4>${esc(c.name)} <span class="comp-cat ${catClass}" style="margin-left:8px;">${CAT_LABELS[c.category] || c.category}</span></h4>
+          <div class="meta" style="margin-top:6px;">
+            <span>📅 ${fmtDate(c.date)} om ${fmtTime(c.time)}</span>
+            <span>📍 ${esc(c.location)}</span>
+            <span>💶 ${fmtPrice(c.price)}</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <span class="chip ${regs.length >= c.max ? "e" : "b"}">${regs.length}/${c.max} deelnemers</span>
+          <button class="btn btn-ghost btn-sm" data-toggle="${c.id}">Deelnemers</button>
+          <button class="btn btn-danger btn-sm" data-del="${c.id}" title="Competitie verwijderen">🗑</button>
+        </div>
+      </div>
+      <div class="participants" id="parts-${c.id}">
+        ${regs.length
+          ? `<table>
+              <thead><tr><th>#</th><th>Naam</th><th>E-mail</th><th>Categorie</th><th>Club</th><th>Opmerking</th></tr></thead>
+              <tbody>
+                ${regs.map((r, i) => `
+                  <tr>
+                    <td>${i + 1}</td>
+                    <td><b>${esc(r.name)}</b></td>
+                    <td>${esc(r.email)}</td>
+                    <td><span class="chip ${r.category === "beginner" ? "b" : r.category === "intermediate" ? "i" : "e"}">${CAT_LABELS[r.category] || r.category}</span></td>
+                    <td>${esc(r.club) || "—"}</td>
+                    <td>${esc(r.notes) || "—"}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
+            <div style="display:flex; justify-content:flex-end; margin-top:12px;">
+              <button class="btn btn-ghost btn-sm" data-export="${c.id}">⬇ Exporteer CSV</button>
+            </div>`
+          : `<div class="empty">Nog geen inschrijvingen voor deze competitie.</div>`}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ================= Create competition ================= */
+$("#create-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = $("#f-name").value.trim();
+  const date = $("#f-date").value;
+  const time = $("#f-time").value;
+  const location = $("#f-location").value.trim();
+  const category = $("#f-category").value;
+  const max = parseInt($("#f-max").value, 10);
+  const deadline = $("#f-deadline").value;
+  const price = parseFloat($("#f-price").value) || 0;
+  const desc = $("#f-desc").value.trim();
+
+  if (!name || !date || !time || !location || !max || max < 1) {
+    toast("Vul alle verplichte velden correct in.", "error");
+    return;
+  }
+  if (deadline && deadline < date) {
+    toast("De deadline kan niet na de competitiedatum liggen.", "error");
+    return;
+  }
+
+  DB.competitions.push({ id: uid(), name, date, time, location, category, max, deadline, price, desc, createdAt: Date.now() });
+  saveData(DB);
+  e.target.reset();
+  $("#f-time").value = "19:00";
+  $("#f-max").value = 40;
+  $("#f-price").value = 10;
+  renderBrowse();
+  renderOwner();
+  toast(`Competitie "${name}" aangemaakt! 🎉`, "success");
+});
+
+/* ================= Register modal ================= */
+let regTarget = null;
+
+function openRegister(compId) {
+  const comp = DB.competitions.find((c) => c.id === compId);
+  if (!comp) return;
+  if (!canRegister(comp)) { toast("Deze competitie is niet meer open voor inschrijving.", "error"); return; }
+  regTarget = compId;
+  $("#reg-title").textContent = "Inschrijven: " + comp.name;
+  $("#reg-sub").textContent = `${fmtDate(comp.date)} om ${fmtTime(comp.time)} · ${comp.location} · ${fmtPrice(comp.price)}`;
+  $("#register-form").reset();
+  $("#register-modal").classList.add("open");
+}
+function closeRegister() {
+  $("#register-modal").classList.remove("open");
+  regTarget = null;
+}
+$("#modal-close").addEventListener("click", closeRegister);
+$("#register-modal").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeRegister(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeRegister(); });
+
+$("#register-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!regTarget) return;
+  const comp = DB.competitions.find((c) => c.id === regTarget);
+  if (!comp) { closeRegister(); return; }
+  if (!canRegister(comp)) { toast("Deze competitie is inmiddels vol of gesloten.", "error"); closeRegister(); return; }
+
+  const name = $("#r-name").value.trim();
+  const email = $("#r-email").value.trim().toLowerCase();
+  const category = $("#r-category").value;
+  const club = $("#r-club").value.trim();
+  const notes = $("#r-notes").value.trim();
+
+  if (!name || !email) { toast("Vul naam en e-mailadres in.", "error"); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast("Vul een geldig e-mailadres in.", "error"); return; }
+
+  const dup = DB.registrations.find((r) => r.compId === comp.id && r.email === email);
+  if (dup) { toast("Dit e-mailadres is al ingeschreven voor deze competitie.", "error"); return; }
+
+  DB.registrations.push({ id: uid(), compId: comp.id, name, email, category, club, notes, createdAt: Date.now() });
+  saveData(DB);
+  closeRegister();
+  renderBrowse();
+  renderOwner();
+  toast(`Je bent ingeschreven voor "${comp.name}"! 🧗`, "success");
+});
+
+/* ================= Owner list events (delegate) ================= */
+$("#owner-list").addEventListener("click", (e) => {
+  const toggleBtn = e.target.closest("[data-toggle]");
+  const delBtn = e.target.closest("[data-del]");
+  const exportBtn = e.target.closest("[data-export]");
+
+  if (toggleBtn) {
+    const parts = $("#parts-" + toggleBtn.dataset.toggle);
+    if (parts) parts.classList.toggle("open");
+    toggleBtn.textContent = parts.classList.contains("open") ? "Verberg" : "Deelnemers";
+    return;
+  }
+  if (delBtn) {
+    const comp = DB.competitions.find((c) => c.id === delBtn.dataset.del);
+    if (!comp) return;
+    if (!confirm(`Weet je zeker dat je "${comp.name}" wilt verwijderen?\nAlle ${regsFor(comp.id).length} inschrijvingen gaan ook verloren.`)) return;
+    DB.competitions = DB.competitions.filter((c) => c.id !== comp.id);
+    DB.registrations = DB.registrations.filter((r) => r.compId !== comp.id);
+    saveData(DB);
+    renderBrowse();
+    renderOwner();
+    toast("Competitie verwijderd.", "success");
+    return;
+  }
+  if (exportBtn) {
+    exportCsv(exportBtn.dataset.export);
+  }
+});
+
+/* ================= CSV export ================= */
+function exportCsv(compId) {
+  const comp = DB.competitions.find((c) => c.id === compId);
+  if (!comp) return;
+  const regs = regsFor(compId);
+  const rows = [
+    ["Naam", "E-mail", "Categorie", "Club", "Opmerking"],
+    ...regs.map((r) => [r.name, r.email, CAT_LABELS[r.category] || r.category, r.club || "", r.notes || ""])
+  ];
+  const csv = "\uFEFF" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\r\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `deelnemers-${comp.name.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+  toast("CSV geëxporteerd.", "success");
+}
+
+/* ================= Grid events (delegate) ================= */
+$("#comp-grid").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-reg]");
+  if (btn) openRegister(btn.dataset.reg);
+});
+
+/* ================= Init ================= */
+function init() {
+  // Default demo data on first visit
+  if (!localStorage.getItem(STORE_KEY)) {
+    const today = new Date();
+    const inDays = (n) => { const d = new Date(today); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    DB = {
+      competitions: [
+        {
+          id: uid(), name: "Winter Boulder Cup 2026", date: inDays(21), time: "19:00",
+          location: "Klimhal De Rots, Amsterdam", category: "open", max: 40,
+          deadline: inDays(14), price: 10,
+          desc: "20 boulders, 3 uur klimmen. Prijzen voor de top 3 per categorie. Borrel na afloop!",
+          createdAt: Date.now()
+        },
+        {
+          id: uid(), name: "Jeugd Boulder Battle", date: inDays(35), time: "13:00",
+          location: "Bouldercentrum De Muur, Utrecht", category: "beginner", max: 25,
+          deadline: "", price: 5,
+          desc: "Laagdrempelige competitie voor jongeren tot 16 jaar. Geen ervaring nodig.",
+          createdAt: Date.now()
+        },
+        {
+          id: uid(), name: "Master Series: Lead & Boulder", date: inDays(49), time: "18:30",
+          location: "Klimfabriek Eindhoven", category: "expert", max: 30,
+          deadline: inDays(42), price: 15,
+          desc: "Voor gevorderde klimmers. 25 harde boulders, finales op groot scherm.",
+          createdAt: Date.now()
+        }
+      ],
+      registrations: []
+    };
+    saveData(DB);
+  }
+  renderBrowse();
+  updateAuthUI();
+}
+init();
+</script>
 </body>
 </html>
